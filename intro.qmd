@@ -1,0 +1,30 @@
+---
+title: "Hello World!"
+author: "AJ Thurston"
+format: html
+---
+
+## Quarto
+
+@fig1 demonstrates the negative relationship between displacement and highway milage.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+#| label: fig1
+#| warning: false
+p <- ggplot(data = mpg, aes(x = displ, y = hwy)) 
+p <- p + geom_point()
+p <- p + geom_smooth(formula = y ~ x, method = "loess")
+p
+```
+
+You can add options to executable code like this
+
+```{r}
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
