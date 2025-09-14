@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 288.00 144.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    line, polyline, path, rect, circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMi43Mzk3M3wyODh8MTQxLjI2fDA='>
+    <rect x='2.74' y='0.00' width='285.26' height='141.26' />
+  </clipPath>
+</defs>
+<rect x='2.74' y='105.95' width='285.26' height='35.32' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; fill: #333333;' clip-path='url(#cpMi43Mzk3M3wyODh8MTQxLjI2fDA=)' />
+<rect x='2.74' y='70.63' width='285.26' height='35.32' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; fill: #336666;' clip-path='url(#cpMi43Mzk3M3wyODh8MTQxLjI2fDA=)' />
+<rect x='2.74' y='35.32' width='285.26' height='35.32' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; fill: #339999;' clip-path='url(#cpMi43Mzk3M3wyODh8MTQxLjI2fDA=)' />
+<rect x='2.74' y='-0.00' width='285.26' height='35.32' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; fill: #CCFFFF;' clip-path='url(#cpMi43Mzk3M3wyODh8MTQxLjI2fDA=)' />
+<g clip-path='url(#cpMi43Mzk3M3wyODh8MTQxLjI2fDA=)'><text x='100.60' y='131.84' style='font-size: 22.76px; fill: #CCFFFF; font-family: Arial;' textLength='89.54px' lengthAdjust='spacingAndGlyphs'>#333333</text></g>
+<g clip-path='url(#cpMi43Mzk3M3wyODh8MTQxLjI2fDA=)'><text x='100.60' y='96.52' style='font-size: 22.76px; fill: #339999; font-family: Arial;' textLength='89.54px' lengthAdjust='spacingAndGlyphs'>#336666</text></g>
+<g clip-path='url(#cpMi43Mzk3M3wyODh8MTQxLjI2fDA=)'><text x='100.60' y='61.21' style='font-size: 22.76px; fill: #336666; font-family: Arial;' textLength='89.54px' lengthAdjust='spacingAndGlyphs'>#339999</text></g>
+<g clip-path='url(#cpMi43Mzk3M3wyODh8MTQxLjI2fDA=)'><text x='94.27' y='25.89' style='font-size: 22.76px; fill: #333333; font-family: Arial;' textLength='102.21px' lengthAdjust='spacingAndGlyphs'>#CCFFFF</text></g>
+<defs>
+  <clipPath id='cpMHwyODh8MTQ0fDA='>
+    <rect x='0.00' y='0.00' width='288.00' height='144.00' />
+  </clipPath>
+</defs>
+</svg>

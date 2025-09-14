@@ -1,0 +1,21 @@
+---
+title: "Fifty stater answer"
+---
+
+https://stackoverflow.com/questions/13757771/relocating-alaska-and-hawaii-on-thematic-map-of-the-usa-with-ggplot2
+
+I've published the fiftystater R package on GitHub (devtools::install_github("wmurphyrd/fiftystater")) to provide a simple solution. It is based on the steps from Spacedman's answer (would link but insufficient rep) and is published as a ggplot2::geom_map ready shape data frame named fifty_states to remove the need to install dependencies, track down a source shape file, or tweak elide values.
+
+```{r}
+library(ggplot2)
+library(mapproj)
+library(fiftystater)
+
+crimes <- data.frame(state = tolower(rownames(USArrests)), USArrests)
+
+p <- ggplot(crimes, aes(map_id = state)) + 
+  geom_map(aes(fill = Assault), map = fifty_states) + 
+  expand_limits(x = fifty_states$long, y = fifty_states$lat) +
+  coord_map()
+p
+```

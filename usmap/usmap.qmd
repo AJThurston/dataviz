@@ -1,0 +1,169 @@
+---
+title: "US Map"
+output: github_document
+---
+
+``` {r setup}
+library(usmap)
+library(ggplot2)
+library(dplyr)
+library(ggrepel)
+```
+
+## Introduction
+
+## Data import
+``` {r data}
+# https://www.opa.mil/research-analysis/recruiting-awareness/population-representation/2020-population-representation-in-the-military-services/population-representation-in-the-military-services-fy20-appendix-b-active-component-accessions-and-force/
+df <- read.csv("data/poprep2020.csv")
+
+# sfc_as_cols <- function(x, names = c("x","y")) {
+#   stopifnot(inherits(x,"sf") && inherits(sf::st_geometry(x),"sfc_POINT"))
+#   ret <- do.call(rbind,sf::st_geometry(x))
+#   ret <- tibble::as_tibble(ret)
+#   stopifnot(length(names) == ncol(ret))
+#   ret <- setNames(ret,names)
+#   dplyr::bind_cols(x,ret)
+# }
+
+# get.centroids <- function(
+#   data, 
+#   long = "long", lat = "lat", 
+#   by_var = "state",  # the grouping variable, e.g. state: get centroid by state
+#   fill_var = NULL # the variable to plot 
+#   ){
+#   data <- data[!is.na(data[[by_var]]),]
+#   data[[by_var]] <- as.character(data[[by_var]]) # sometimes there is empty factor level
+#   dt1_df <- sp::SpatialPointsDataFrame(coords = data[, c(long, lat), with = FALSE], data = data)
+#   dt1_geo <- by(dt1_df, dt1_df[[by_var]], function(x) {sp::Polygon(x[c(long, lat)])@labpt})
+#   centroids <- stats::setNames(do.call("rbind.data.frame", dt1_geo), c(long, lat))
+#   centroids$name <- names(dt1_geo) 
+#   if(!is.null(fill_var)){ # if need to join fill value 
+#     setkeyv(setDT(centroids), "name")
+#     dt_var <- unique(data[,c(by_var, fill_var), with = FALSE])
+#     setkeyv(dt_var, by_var)
+#     centroids <- dt_var[centroids]
+#   }
+#   return(centroids)
+# }
+
+state_data <- map_data("state")
+
+centroids <- map_data("state") %>%
+  group_by(region) %>%
+  summarize(long = median(long), lat = median(lat))
+
+unique(state_data$region)
+# state_centroid <- usmapdata::centroid_labels("states", as_sf = FALSE) %>%
+#   sfc_as_cols(.) %>%
+#   subset(select = c(x,y,full,abbr)) %>%
+#   mutate(c.x = x/100000) %>%
+#   mutate(c.y = y/100000) %>%
+#   subset(select = c(c.x,c.y,full,abbr))
+
+small_states <- c("VT","NH","MA","RI","CT","NJ","DE","MD","DC")
+
+df <- left_join(df, state_centroid, by = "full") %>%
+  mutate(pct = scales::percent(representation_ratio, accuracy = 1)) %>%
+  mutate(lbl = paste(abbr, "\n", pct)) %>%
+  mutate(sml = ifelse(abbr %in% small_states,1,0)) %>%
+  mutate(lbl = ifelse(abbr %in% small_states, paste(abbr, "", pct),lbl)) %>%
+  mutate(sml = ifelse(abbr %in% c("HI"),2,sml))
+
+# poly <- us_map(regions = "states")
+# poly <- left_join(poly, df[c("full", "representation_ratio", "c.x", "c.y")], by = "full")
+
+capitalize <- function(x) {
+  substr(x, 1, 1) <- toupper(substr(x, 1, 1))
+  x
+}
+
+poly <- map_data("state") %>%
+  mutate(full = capitalize(region))
+
+poly <- left_join(poly, df[c("full", "representation_ratio", "c.x", "c.y")], by = "full")
+```
+
+## Map plotting
+``` {r map_plot}
+library(ggplot2)
+library(mapproj)
+library(fiftystater)
+
+df <- read.csv("data/poprep2020.csv")
+dat <- data.frame(state = tolower(df$full), df)
+rm(df)
+
+ggplot(data = dat, aes(map_id = state)) + 
+  geom_map(aes(fill = representation_ratio), map = fifty_states) + 
+  expand_limits(x = fifty_states$long, y = fifty_states$lat) +
+  coord_map() +
+  geom_text(data = centroids, 
+                   aes(x = long, y = lat, label = state), 
+                   size = 2.25,
+                   color = "white")
+
+
+# ggplot() +
+#  geom_polygon(data = poly, 
+# aes(long, lat, group = full, fill = representation_ratio), 
+# color = 'white',
+# size = .25) +
+geom_text(data = df %>% filter(sml == 0), 
+                   aes(x = long, y = lat, label = full), 
+                   size = 2.25,
+                   color = "white") +
+geom_label_repel(data = df %>% filter(sml == 1), 
+                          aes(x = c.x, y = c.y, label = lbl, fill = representation_ratio),
+                          segment.size = NA, 
+                          size = 2.25,
+                          ylim = c(-Inf,500000), 
+                          xlim = c(2500000,Inf), 
+                          direction  = "y",
+                          box.padding = .025,
+                          color = "white") +
+geom_text_repel(data = df %>% filter(sml == 2), 
+                         aes(x = c.x, y = c.y, label = lbl),
+                         size = 2.25) +
+coord_equal()+
+#scale_x_continuous(limits = c(-2010000,3000000), expand = c(0,0)) +
+scale_y_continuous(expand = c(0,0)) +
+scale_fill_gradient()+
+theme_void()+
+theme(legend.position = "none")
+
+
+# ggsave("img/map.png",
+#        plot = last_plot,
+#        scale = 1,
+#        width = 6.5,
+#        height = 4,
+#        units = "in",
+#        dpi = 300)
+
+```
+
+![](img/map.png)
+
+
+
+```{r}
+library(ggplot2)
+library(mapproj)
+library(fiftystater)
+
+df <- read.csv("data/poprep2020.csv")
+dat <- data.frame(state = tolower(df$full), df)
+rm(df)
+
+centroids <- map_data("state") %>%
+  group_by(region) %>%
+  summarize(long = median(long), lat = median(lat)) %>%
+  mutate(state =)
+
+ggplot(data = dat, aes(map_id = state)) + 
+  geom_map(aes(fill = representation_ratio), map = fifty_states) + 
+  expand_limits(x = fifty_states$long, y = fifty_states$lat) +
+  coord_map() +
+  geom_text(aes(label = state), size = 2.25, color = "white")
+```
