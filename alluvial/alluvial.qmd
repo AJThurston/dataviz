@@ -1,0 +1,38 @@
+---
+title: "alluvial"
+author: "AJ Thurston"
+format:
+  html:
+    warning: FALSE
+    message: FALSE
+---
+
+## Setup
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(ggalluvial)
+```
+
+## Data
+
+Imported from validation
+
+```{r}
+dat <- read.csv("https://raw.githubusercontent.com/AJThurston/dominance/refs/heads/master/data/da_results.csv", header = T)
+```
+
+## Plot
+
+```{r}
+dat2 <- dat %>%
+  filter(!is.na(val))
+
+# Alluvial: Block 1 → Block 2
+ggplot(dat2,
+       aes(x = block, y = val, stratum = var_fullname, alluvium = var_fullname)) +
+  scale_x_discrete(limits = c("1","2"), expand = c(.1, .05)) +
+  geom_alluvium(aes(fill = var_fullname)) +
+  geom_stratum(width = 1/8, fill = "grey90", color = "black") +
+  theme_minimal() 
+```
