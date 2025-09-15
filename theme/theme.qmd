@@ -17,7 +17,7 @@ library(ggplot2)
 ## Plot
 
 ```{r}
-devtools::source_url("https://raw.githubusercontent.com/USERNAME/REPO/main/mytheme.R")
+devtools::source_url("https://raw.githubusercontent.com/AJThurston/dataviz/refs/heads/main/theme/theme.r")
 
 df <- data.frame(values = as.factor(c(0,0,0,0,0,0,1,1,1,1,1,1,1,1,1)))
 
