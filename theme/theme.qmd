@@ -1,0 +1,32 @@
+---
+title: "Theme"
+author: "AJ Thurston"
+format:
+  html:
+    warning: FALSE
+    message: FALSE
+---
+
+## Setup
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+```
+
+## Plot
+
+```{r}
+devtools::source_url("https://raw.githubusercontent.com/USERNAME/REPO/main/mytheme.R")
+
+df <- data.frame(values = as.factor(c(0,0,0,0,0,0,1,1,1,1,1,1,1,1,1)))
+
+ggplot(df, aes(x = values)) +
+  geom_bar(fill = "#336666", width = .5) +
+  labs(title = "Frequency plot",
+       x = "Values",
+       y = "Frequency") +
+  scale_y_continuous(breaks = c(0:10), expand = c(0,0,0,0)) +
+  theme_custom(base_size = 16)
+
+```

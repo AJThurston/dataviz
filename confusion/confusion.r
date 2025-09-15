@@ -2,7 +2,6 @@ library(ggplot2)
 library(dplyr)
 library(showtext)
 
-# Load JetBrains Mono (Google font)
 font_add_google("JetBrains Mono", "jetbrains")
 showtext_auto()
 
