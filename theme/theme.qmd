@@ -24,5 +24,6 @@ ggplot(df, aes(x = values)) +
   geom_bar(fill = "#336666", width = .5) +
   labs(x = "Values", y = "Frequency") +
   scale_y_continuous(limits = c(0,10), breaks = c(0:10), expand = c(0,0)) +
-  theme_custom()
+  theme_custom() +
+  theme(plot.background = element_rect(color = "black"))
 ```
