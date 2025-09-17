@@ -1,4 +1,4 @@
-# Theme
+# Bar plots
 AJ Thurston
 
 ## Setup

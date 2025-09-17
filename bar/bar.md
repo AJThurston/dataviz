@@ -1,30 +1,23 @@
----
-title: "Bar plots"
-author: "AJ Thurston"
-format:
-  gfm:
-    output-file: "README"
-    output-ext:  "md"
-    warning: FALSE
-    message: FALSE
----
+# Theme
+AJ Thurston
 
 ## Setup
 
-```{r setup}
+``` r
 library(tidyverse)
 library(ggplot2)
 devtools::source_url("ajthurston.com/theme")
 ```
 
 ## Data
-```{r data}
+
+``` r
 dat <- data.frame(values = as.factor(c(rep(0,6),rep(1,9))))
 ```
 
 ## Vertical Bar Plot
 
-```{r plot}
+``` r
 ggplot(dat, aes(x = values)) +
   geom_bar(fill = "#336666", width = .5) +
   labs(x = "Values", y = "Frequency") +
@@ -32,13 +25,17 @@ ggplot(dat, aes(x = values)) +
   theme_custom()
 ```
 
+![](bar_files/figure-commonmark/plot-1.png)
+
 ## Recoding Data
 
-Horizontal bar plots are useful when the variable values are long strings of text.
+Horizontal bar plots are useful when the variable values are long
+strings of text.
 
-The following recodes the dataset from numeric values 0 and 1 to strings.
+The following recodes the dataset from numeric values 0 and 1 to
+strings.
 
-```{r recode}
+``` r
 dat$values_name <- dat$values |>
   recode('0' = "This is a value of zero (0)\nin a long label format",
          '1' = "This is a value of one (1)\nin a long label format")
@@ -46,9 +43,11 @@ dat$values_name <- dat$values |>
 
 ## Horizontal Bar Plot
 
-Compare and contrast the vertical bar plot code above with the horizontal bar plot code below. Note that the data is now explictly plotted from the y-axis and frequencies are plotted on the x-axis.
+Compare and contrast the vertical bar plot code above with the
+horizontal bar plot code below. Note that the data is now explictly
+plotted from the y-axis and frequencies are plotted on the x-axis.
 
-```{r horizontal_bar}
+``` r
 ggplot(dat, aes(y = fct_rev(values_name))) +
   geom_bar(fill = "#336666", width = .5) +
   labs(x = "Values", y = "Frequency") +
@@ -56,3 +55,5 @@ ggplot(dat, aes(y = fct_rev(values_name))) +
   theme_custom() +
   theme(axis.title.y = element_blank())
 ```
+
+![](bar_files/figure-commonmark/horizontal_bar-1.png)
