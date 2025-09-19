@@ -6,7 +6,7 @@ suppressMessages({
   })
 })
 
-theme_custom <- function(base_size = 12, base_family = "jetbrains") {
+theme_custom <- function(base_size = 16, base_family = "jetbrains") {
   list(  
     labs(caption = "@AJThurston"),
     theme(
@@ -18,6 +18,10 @@ theme_custom <- function(base_size = 12, base_family = "jetbrains") {
       panel.background = element_blank(),
       axis.line = element_line(color = "black"),
       axis.text = element_text(color = "black"),
+      axis.text.x = element_text(margin = margin(t = 10)),
+      axis.text.y = element_text(margin = margin(r = 10)),
+      axis.title.x = element_text(margin = margin(t = 10)),
+      axis.title.y = element_text(margin = margin(r = 10)),
       axis.ticks = element_blank(),
     )
   )
