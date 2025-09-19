@@ -19,10 +19,13 @@ dat <- data.frame(values = as.factor(c(rep(0,6),rep(1,9))))
 
 ``` r
 ggplot(dat, aes(x = values)) +
-  geom_bar(fill = "#336666", width = .5) +
+  geom_bar(fill = "#336666", width = .25) +
+  geom_text(aes(label = after_stat(count)), stat = "count", size = 16/.pt, vjust = -1) +
   labs(x = "Values", y = "Frequency") +
   scale_y_continuous(limits = c(0,10), breaks = c(0:10), expand = c(0,0)) +
-  theme_custom()
+  theme_custom() +
+    theme(axis.text.y = element_blank()
+  )
 ```
 
 ![](bar_files/figure-commonmark/plot-1.png)
@@ -49,11 +52,43 @@ plotted from the y-axis and frequencies are plotted on the x-axis.
 
 ``` r
 ggplot(dat, aes(y = fct_rev(values_name))) +
-  geom_bar(fill = "#336666", width = .5) +
-  labs(x = "Values", y = "Frequency") +
+  geom_bar(fill = "#336666", width = .25) +
+  geom_text(aes(label = after_stat(count)), stat = "count", size = 16/.pt, hjust = -1) +
+  labs(x = "Frequency", y = NULL) +
   scale_x_continuous(limits = c(0,10), breaks = c(0:10), expand = c(0,0)) +
   theme_custom() +
-  theme(axis.title.y = element_blank())
+  theme(axis.text.x = element_blank()
+        )
 ```
 
 ![](bar_files/figure-commonmark/horizontal_bar-1.png)
+
+## Loading Bar Plot
+
+A loading bar plot is a 100% stacked bar chart. Instead of displaying
+raw counts, each bar is rescaled so that the total equals 100%. This
+allows direct comparison of proportions across categories. The bars
+resemble progress indicators, with segment widths corresponding to the
+percentage share of each component. Whitespace is important here, as the
+empty portion of the bar visually reinforces the gap between the
+observed proportion and the full 100%.
+
+``` r
+dat_prop <- dat |>
+  count(values_name) |>
+  mutate(prop = n / sum(n)) |>
+  mutate(label = scales::percent(prop, accuracy = 1))
+
+ggplot(dat_prop, aes(x = prop, y = fct_rev(values_name))) +
+  geom_col(aes(x = 1), fill = NA, color = "#336666", size = 16/.pt, width = .25) +
+  geom_col(fill = "#336666", width = .25) +
+  geom_text(aes(label = label), hjust = -.25) +
+  scale_x_continuous(expand = c(0,0), limits = c(0,1)) +
+  labs(x = "Percent", y = NULL) +
+  theme_custom() +
+  theme(
+    axis.text.x = element_blank()
+    )
+```
+
+![](bar_files/figure-commonmark/loading_bar-1.png)

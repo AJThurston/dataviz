@@ -27,7 +27,7 @@ dat <- data.frame(values = as.factor(c(rep(0,6),rep(1,9))))
 ```{r plot}
 ggplot(dat, aes(x = values)) +
   geom_bar(fill = "#336666", width = .25) +
-  geom_text(aes(label = after_stat(count)), stat = "count", vjust = -1) +
+  geom_text(aes(label = after_stat(count)), stat = "count", size = 16/.pt, vjust = -1) +
   labs(x = "Values", y = "Frequency") +
   scale_y_continuous(limits = c(0,10), breaks = c(0:10), expand = c(0,0)) +
   theme_custom() +
@@ -54,7 +54,7 @@ Compare and contrast the vertical bar plot code above with the horizontal bar pl
 ```{r horizontal_bar}
 ggplot(dat, aes(y = fct_rev(values_name))) +
   geom_bar(fill = "#336666", width = .25) +
-  geom_text(aes(label = after_stat(count)), stat = "count", hjust = -1) +
+  geom_text(aes(label = after_stat(count)), stat = "count", size = 16/.pt, hjust = -1) +
   labs(x = "Frequency", y = NULL) +
   scale_x_continuous(limits = c(0,10), breaks = c(0:10), expand = c(0,0)) +
   theme_custom() +
@@ -73,7 +73,7 @@ dat_prop <- dat |>
   mutate(label = scales::percent(prop, accuracy = 1))
 
 ggplot(dat_prop, aes(x = prop, y = fct_rev(values_name))) +
-  geom_col(aes(x = 1), fill = NA, color = "#336666", width = .25) +
+  geom_col(aes(x = 1), fill = NA, color = "#336666", size = 16/.pt, width = .25) +
   geom_col(fill = "#336666", width = .25) +
   geom_text(aes(label = label), hjust = -.25) +
   scale_x_continuous(expand = c(0,0), limits = c(0,1)) +
