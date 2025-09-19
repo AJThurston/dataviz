@@ -80,9 +80,9 @@ dat_prop <- dat |>
   mutate(label = scales::percent(prop, accuracy = 1))
 
 ggplot(dat_prop, aes(x = prop, y = fct_rev(values_name))) +
-  geom_col(aes(x = 1), fill = NA, color = "#336666", size = 16/.pt, width = .25) +
+  geom_col(aes(x = 1), fill = NA, color = "#336666", width = .25) +
   geom_col(fill = "#336666", width = .25) +
-  geom_text(aes(label = label), hjust = -.25) +
+  geom_text(aes(label = label), size = 16/.pt, hjust = -.25) +
   scale_x_continuous(expand = c(0,0), limits = c(0,1)) +
   labs(x = "Percent", y = NULL) +
   theme_custom() +
