@@ -1,5 +1,5 @@
 ---
-title: "Du Bois Wrapped Bar Chart"
+title: "Coil Chart: Du Bois Wrapped Bar Chart"
 format:
   html:
     warning: FALSE
@@ -8,10 +8,13 @@ format:
     embed-resources: true
 ---
 
+![](coil.png)
+
+![](coil_myth.png)
+
+![](coil_reality.png)
+
 ### Background
-
-The regression plot below illustrates four core elements of a linear model: the regression line of best fit, the observed values, the predicted values, and residuals. The regression line represents the fitted relationship between experience and performance, estimated from the data by minimizing squared errors. The observed values are the actual data points, shown as individual markers scattered around the line. The predicted values are the locations on the line corresponding to each observed predictor value, reflecting the model’s best estimate of performance given experience. Residuals are the vertical distances between observed and predicted points, visualized here as line segments; they quantify the discrepancy between the model and reality, and together provide a visual measure of model fit.
-
 
 ```{r}
 library(ggplot2)
@@ -753,21 +756,112 @@ ggplot(dat, aes(x, y, color = group, group = group)) +
 library(ggplot2)
 library(dplyr)
 library(ggforce)
+source("https://ajthurston.com/theme")
 
-raw = data.frame(
-  count = c(4,1),
-  group = as.factor(c(0,1))
-)
+dat <- read.csv("dat.csv", header = TRUE)
+
+dat <- dat |>
+  mutate(group = as.factor(group))
+
+coil1 <- ggplot(dat, aes(x, y, color = group, group = group)) +
+  geom_path(linewidth = 4) +
+  scale_y_reverse()+ #expand = c(.1,.1)) +
+  scale_x_continuous(limits = c(-1.1,2.5), expand= c(.01,.1)) +
+  scale_color_manual(values = c("#336666","#FF7F7F")) +
+  annotate("text", x = 1.05, y = 0, label = "100%", size = 10, hjust = 0,  family = "jetbrains", color = "#336666") +
+    annotate("text", x = -.05, y = 0, label = "Traditional", size = 10, hjust = 1,  family = "jetbrains", color = "#336666") +
+      annotate("text", x = -.05, y = 1, label = "Storytelling",size = 10,  hjust = 1,  family = "jetbrains", color = "#FF7F7F") +
+      annotate("text", x = 2.3, y = 11, label = "2200%", size = 10, color = "#FF7F7F", family = "jetbrains") +
+  theme_void()  +
+    theme(legend.position = "none")
+
+ggsave("coil_myth.png", coil1,
+       height = 2,
+       width = 3,
+       dpi = 300)
+```
+
+
+```{r}
+dat <- read.csv("dat.csv", header = TRUE)
 
 dat <- data.frame(
-  x = c(0, .95,.95, .05, .05, .95, .95, .75, 0, 1),
-  y = c(0, 0,1, 1, 2, 2, 3, 3, 4, 4),
-  group = as.factor(c(0,0,0,0,0,0,0,0,1,1))
+    x = c(0,0,1,1.21,0,0),
+    y = c(0,1,0,1,11,11),
+    group = as.factor(c(0,1,0,1,2,2))
 )
 
-ggplot(dat, aes(x, y, color = group, group = group)) +
-  geom_path(linewidth = 20, n = 100) +
-  scale_y_reverse(expand = c(.1,.1)) +
-  theme_minimal()
+coil2<-ggplot(dat, aes(x, y, color = group, group = group)) +
+  geom_path(linewidth = 4) +
+  scale_y_reverse() + #limits = c(11,.5), expand = c(.1,.1)) +
+  scale_x_continuous(limits = c(-1.1,2.5), expand= c(.01,.1)) +
+  scale_color_manual(values = c("#336666","#FF7F7F","#FFFFFFFF")) +
+  annotate("text", x = 1.05, y = 0, label = "100%", size = 10, hjust = 0,  family = "jetbrains", color = "#336666") +
+    annotate("text", x = -.05, y = 0, label = "Traditional", size = 10, hjust = 1,  family = "jetbrains", color = "#336666") +
+      annotate("text", x = -.05, y = 1, label = "Storytelling",size = 10,  hjust = 1,  family = "jetbrains", color = "#FF7F7F") +
+      annotate("text", x = 1.51, y = 1, label = "121%", size = 10, color = "#FF7F7F", family = "jetbrains") +
+  theme_void()  +
+    theme(legend.position = "none")
 
+ggsave("coil_reality.png", coil2,
+       height = 2,
+       width = 3,
+       dpi = 300)
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(ggforce)
+source("https://ajthurston.com/theme")
+
+dat <- read.csv("dat.csv", header = TRUE)
+
+dat <- dat |>
+  mutate(group = as.factor(group))
+
+myth<-ggplot(dat, aes(x, y, color = group, group = group)) +
+  geom_path(linewidth = 4) +
+  scale_y_reverse()+ #expand = c(.1,.1)) +
+  scale_x_continuous(limits = c(-1.1,2.5), expand= c(.01,.1)) +
+  scale_color_manual(values = c("#336666","#FF7F7F")) +
+  annotate("text", x = 1.05, y = 0, label = "100%", size = 10, hjust = 0,  family = "jetbrains", color = "#336666") +
+    annotate("text", x = -.05, y = 0, label = "Traditional", size = 10, hjust = 1,  family = "jetbrains", color = "#336666") +
+      annotate("text", x = -.05, y = 1, label = "Storytelling",size = 10,  hjust = 1,  family = "jetbrains", color = "#FF7F7F") +
+      annotate("text", x = 2.3, y = 11, label = "2200%", size = 10, color = "#FF7F7F", family = "jetbrains") +
+  theme_void()  +
+    theme(legend.position = "none")
+
+ggsave("myth.png", myth,
+       height = 2,
+       width = 3,
+       dpi = 300)
+```
+
+
+```{r}
+dat <- read.csv("dat.csv", header = TRUE)
+
+dat <- data.frame(
+    x = c(0,0,1,1.21,0,0),
+    y = c(0,1,0,1,11,11),
+    group = as.factor(c(0,1,0,1,2,2))
+)
+
+reality<-ggplot(dat, aes(x, y, color = group, group = group)) +
+  geom_path(linewidth = 4) +
+  scale_y_reverse() + #limits = c(11,.5), expand = c(.1,.1)) +
+  scale_x_continuous(limits = c(-1.1,2.5), expand= c(.01,.1)) +
+  scale_color_manual(values = c("#336666","#FF7F7F","#FFFFFFFF")) +
+  annotate("text", x = 1.05, y = 0, label = "100%", size = 10, hjust = 0,  family = "jetbrains", color = "#336666") +
+    annotate("text", x = -.05, y = 0, label = "Traditional", size = 10, hjust = 1,  family = "jetbrains", color = "#336666") +
+      annotate("text", x = -.05, y = 1, label = "Storytelling",size = 10,  hjust = 1,  family = "jetbrains", color = "#FF7F7F") +
+      annotate("text", x = 1.51, y = 1, label = "121%", size = 10, color = "#FF7F7F", family = "jetbrains") +
+  theme_void()  +
+    theme(legend.position = "none")
+
+ggsave("reality.png", reality,
+       height = 2,
+       width = 3,
+       dpi = 300)
 ```
