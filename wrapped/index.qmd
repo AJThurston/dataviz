@@ -1,0 +1,451 @@
+---
+title: "Regression"
+format:
+  html:
+    warning: FALSE
+    message: FALSE
+    echo: FALSE
+    embed-resources: true
+---
+## Simple Linear Regression
+
+Simple linear regression attempts to describe the relationship between one predictor and one criterion. There are five major #assumptions of a linear regression which required to be satisfied to ensure the results from the regression can be trusted in their interpretation and are not biased: 1. #linearity: this means the relationship between the predictor and the criterion is linear such that whenever the values on the predictor increase (decreases) the values in criterion always increase (decrease) at a consistent rate. This is contrasted from things like curvilinear or logistic relationships. 2. #autocorrelation: a lack of autocorrelation is assumed, meaning the residuals or prediction errors (the difference between the predicted value and actual value) are not related to one another. Auto correlation literally means data is correlated with itself. Autocorrelation may occur when repeated measures are used; for example, assume we asked job incumbents to take a test three times or in time series data. If people who score highly at time 1 are more likely to score highly on time 2 and then score higher on time 3. 3. #normality: multivariate normality means any random combination of predictors and criteria should be jointly, normally distributed. Multivariate normal [looks like this](https://upload.wikimedia.org/wikipedia/commons/5/59/Multivariate_normal_density.png) . 4. #multicollinearity: a lack of multicollinearity is assumed as well, meaning predictors included in a multiple regression are not so correlated with each other as to be redundant. 5. #homoscedasticity: this assumption means the residuals are equal at every level of the independent variable.
+
+### Regression Elements
+
+The regression plot below illustrates four core elements of a linear model: the regression line of best fit, the observed values, the predicted values, and residuals. The regression line represents the fitted relationship between experience and performance, estimated from the data by minimizing squared errors. The observed values are the actual data points, shown as individual markers scattered around the line. The predicted values are the locations on the line corresponding to each observed predictor value, reflecting the model’s best estimate of performance given experience. Residuals are the vertical distances between observed and predicted points, visualized here as line segments; they quantify the discrepancy between the model and reality, and together provide a visual measure of model fit.
+
+
+```{r}
+library(tidyverse)
+source("https://ajthurston.com/theme")
+
+dat <- read.csv("https://ajthurston.com/validation/raw") |> 
+  filter(vet == 1) 
+
+fit <- lm(lapr ~ exp, data = dat)
+dat$pred <- predict(fit)
+dat$resid <- dat$lapr - dat$pred
+```
+
+```{r}
+ggplot(dat, aes(x = exp, y = lapr)) +
+  geom_line(aes(y = pred), color = "#000000", linewidth = 1.5) +
+  geom_segment(aes(xend = exp, yend = pred), color = "#C26B6B", linewidth = 1.5) +
+  geom_point(aes(y = pred), shape = 21, fill = "#87CEEB", color = "#000000", size = 4) +
+  geom_point(size = 3, color = "#336666") +
+  labs(x = "Experience", y = "Performance") +
+  annotate("label", x = 52, y = 4.25, 
+           label = "Line of\nBest Fit",
+           fill = "black", color = "white", family = "jetbrains") +
+  annotate("label", x = 29.5, y = 3.5, hjust = 0, 
+           label = "Observed\nValues",  
+           fill = "#336666", color = "white", family = "jetbrains") +
+  annotate("label", x = 29.5, y = 1.9, hjust = 0,
+           label = "Predicted\nValues",
+           fill = "#87CEEB", color = "black", family = "jetbrains") +
+  annotate("label", x = 45, y = 3.5, hjust = 0,
+           label = "Residuals", 
+           fill = "#C26B6B", color = "white", family = "jetbrains") +
+  annotate(
+    'text',
+    x = 40.5,
+    y = 1.5, hjust = 0,
+    label = 'Observed = predicted\nNo residual', family = "jetbrains" ) +
+  annotate(
+    'curve',
+    x = 40,
+    y = 1.5,  
+    xend = 35.25,
+    yend = 2.8,
+    curvature = -0.25,
+    arrow = arrow(length = unit(0.25, 'cm'))
+  )+
+  theme_custom()
+```
+
+```{r}
+library(ggplot2)
+library(gganimate)
+
+p <- ggplot(dat, aes(x = exp, y = lapr)) +
+  # Observed
+  geom_point(size = 3, color = "#336666") +
+  annotate("label", x = 29.5, y = 3.5, hjust = 0, 
+           label = "Observed\nValues",  
+           fill = "#336666", color = "white", family = "jetbrains") +
+  labs(x = "Experience", y = "Performance") +
+  theme_custom() +  
+  
+  # Line of best fit
+  geom_line(aes(y = pred), color = "#000000", linewidth = 1.5) +
+  annotate("label", x = 52, y = 4.25, label = "Line of\nBest Fit",
+           fill = "black", color = "white", family = "jetbrains") +
+  labs(x = "Experience", y = "Performance") +
+  labs(x = "Experience", y = "Performance") +
+  
+  # Predicted points
+  geom_point(aes(y = pred), shape = 21, fill = "#87CEEB", 
+             color = "#000000", size = 4) +
+  annotate("label", x = 29.5, y = 1.9, hjust = 0,
+           label = "Predicted\nValues",
+           fill = "skyblue", color = "black", family = "jetbrains") +
+  labs(x = "Experience", y = "Performance") +
+  labs(x = "Experience", y = "Performance") +
+  
+  # Residuals
+  geom_segment(aes(xend = exp, yend = pred), 
+               color = "#C26B6B", linewidth = 1.5) +
+    geom_point(size = 3, color = "#336666") +
+    geom_point(aes(y = pred), shape = 21, fill = "#87CEEB", 
+             color = "#000000", size = 4) +
+  annotate("label", x = 45, y = 3.5, hjust = 0,
+           label = "Residuals", 
+           fill = "#C26B6B", color = "white", family = "jetbrains") +
+  
+  # Arrow + text
+  annotate("text", x = 40.5, y = 1.5, hjust = 0,
+           label = "Observed = predicted\nNo residual", 
+           family = "jetbrains") +
+  annotate("curve", x = 40, y = 1.5, xend = 35.25, yend = 2.8,
+           curvature = -0.25,
+           arrow = arrow(length = unit(0.25, "cm"))) +    
+  labs(x = "Experience", y = "Performance") +
+  labs(x = "Experience", y = "Performance") +
+
+  transition_layers(layer_length = 4, transition_length = 0.5)
+
+# animate(p, nframes = 100, fps = 10)
+
+
+```
+
+```{r}
+library(showtext)
+font_add_google("JetBrains Mono", "jetbrains")
+showtext_auto()
+
+# Base
+p <- ggplot(dat, aes(x = exp, y = lapr)) +
+  labs(x = "Experience", y = "Performance") +
+  geom_blank() 
+
+# Full plot with labels as true layers
+anim <- p +
+  geom_point(size = 3, color = "#336666") +
+
+  geom_label(
+    data = data.frame(x = 29.5, y = 3.5, lab = "Observed\nValues"),
+    aes(x, y, label = lab),
+    hjust = 0, fill = "#336666", color = "white", 
+  ) +
+
+  geom_line(aes(y = pred), color = "#000000", linewidth = 1.5) +
+
+  geom_label(
+    data = data.frame(x = 52, y = 4.25, lab = "Line of\nBest Fit"),
+    aes(x, y, label = lab),
+    fill = "black", color = "white", 
+  ) +
+
+  geom_point(
+    aes(y = pred),
+    shape = 21, fill = "#87CEEB", color = "#000000", size = 4
+  ) +
+
+  geom_label(
+    data = data.frame(x = 29.5, y = 1.9, lab = "Predicted\nValues"),
+    aes(x, y, label = lab),
+    hjust = 0, fill = "skyblue", color = "black", 
+  ) +
+
+  geom_segment(
+    aes(xend = exp, yend = pred),
+    color = "#C26B6B", linewidth = 1.5
+  ) +
+
+  geom_label(
+    data = data.frame(x = 45, y = 3.5, lab = "Residuals"),
+    aes(x, y, label = lab),
+    hjust = 0, fill = "#C26B6B", color = "white",
+  ) +
+
+  geom_text(
+    data = data.frame(x = 40.5, y = 1.5, lab = "Observed = predicted\nNo residual"),
+    aes(x, y, label = lab),
+    hjust = 0, 
+  ) +
+
+  geom_curve(
+    data = data.frame(x = 40, y = 1.5, xend = 35.25, yend = 2.8),
+    aes(x = x, y = y, xend = xend, yend = yend),
+    curvature = -0.25,
+    arrow = arrow(length = unit(0.25, "cm"))
+  ) #+
+
+  # transition_layers(layer_length = 2, transition_length = 0.5)
+
+# Animate
+# animate(anim, nframes = 100, fps = 10)
+```
+
+
+::: {.panel-tabset}
+## Regression
+
+``` {r}
+ggplot(dat, aes(x = exp, y = lapr)) +
+  geom_line(aes(y = pred), color = "#000000", linewidth = 1.5) +
+  geom_segment(aes(xend = exp, yend = pred), color = "#C26B6B", linewidth = 1.5) +
+  geom_point(aes(y = pred), shape = 21, fill = "#87CEEB", color = "#000000", size = 4) +
+  geom_point(size = 3, color = "#336666") +
+  labs(x = "Experience", y = "Performance") +
+    annotate("label", x = 29.5, y = 3.5, hjust = 0, 
+           label = "Observed\nValues",  
+           fill = "#336666", color = "white", family = "jetbrains") +
+  annotate("label", x = 52, y = 4.25, 
+           label = "Line of\nBest Fit",
+           fill = "#000000", color = "white", family = "jetbrains") +
+  annotate("label", x = 29.5, y = 1.9, hjust = 0,
+           label = "Predicted\nValues",
+           fill = "#87CEEB", color = "#000000", family = "jetbrains") +
+  annotate("label", x = 45, y = 3.5, hjust = 0,
+           label = "Residuals", 
+           fill = "#C26B6B", color = "white", family = "jetbrains") +
+  annotate(
+    'text',
+    x = 40.5,
+    y = 1.5, hjust = 0,
+    label = 'Observed = predicted\nNo residual', family = "jetbrains") +
+  annotate(
+    'curve',
+    x = 40,
+    y = 1.5,  
+    xend = 35.25,
+    yend = 2.8,
+    curvature = -0.25,
+    color = "#000000",
+    arrow = arrow(length = unit(0.25, 'cm'))
+  )+
+  theme_custom()
+```
+
+## Observed
+
+``` {r}
+ggplot(dat, aes(x = exp, y = lapr)) +
+  geom_line(aes(y = pred), color = "#CCCCCC", linewidth = 1.5) +
+  geom_segment(aes(xend = exp, yend = pred), color = "#F2E6E6", linewidth = 1.5) +
+  geom_point(aes(y = pred), shape = 21, fill = "#E7F7FC", color = "#CCCCCC", size = 4) +
+  geom_point(size = 3, color = "#336666") +
+  labs(x = "Experience", y = "Performance") +
+  annotate("label", x = 29.5, y = 3.5, hjust = 0, 
+           label = "Observed\nValues",  
+           fill = "#336666", color = "white", family = "jetbrains") +
+  annotate("label", x = 52, y = 4.25, 
+           label = "Line of\nBest Fit",
+           fill = "#CCCCCC", color = "white", family = "jetbrains") +
+  annotate("label", x = 29.5, y = 1.9, hjust = 0,
+           label = "Predicted\nValues",
+           fill = "#E7F7FC", color = "#CCCCCC", family = "jetbrains") +
+  annotate("label", x = 45, y = 3.5, hjust = 0,
+           label = "Residuals", 
+           fill = "#F2E6E6", color = "white", family = "jetbrains") +
+  annotate(
+    'text',
+    x = 40.5,
+    y = 1.5, hjust = 0,
+    label = 'Observed = predicted\nNo residual', family = "jetbrains", color = "#CCCCCC") +
+  annotate(
+    'curve',
+    x = 40,
+    y = 1.5,  
+    xend = 35.25,
+    yend = 2.8,
+    curvature = -0.25,
+    color = "#CCCCCC",
+    arrow = arrow(length = unit(0.25, 'cm'))
+  )+
+  theme_custom()
+
+```
+## Line
+
+``` {r}
+ggplot(dat, aes(x = exp, y = lapr)) +
+  geom_segment(aes(xend = exp, yend = pred), color = "#F2E6E6", linewidth = 1.5) +
+  geom_point(aes(y = pred), shape = 21, fill = "#E7F7FC", color = "#CCCCCC", size = 4) +
+  geom_point(size = 3, color = "#E0E5E5") +
+  geom_line(aes(y = pred), color = "#000000", linewidth = 1.5) +
+  labs(x = "Experience", y = "Performance") +
+  annotate("label", x = 29.5, y = 3.5, hjust = 0, 
+           label = "Observed\nValues",  
+           fill = "#E0E5E5", color = "white", family = "jetbrains") +
+  annotate("label", x = 52, y = 4.25, 
+           label = "Line of\nBest Fit",
+           fill = "black", color = "white", family = "jetbrains") +
+  annotate("label", x = 29.5, y = 1.9, hjust = 0,
+           label = "Predicted\nValues",
+           fill = "#E7F7FC", color = "#CCCCCC", family = "jetbrains") +
+  annotate("label", x = 45, y = 3.5, hjust = 0,
+           label = "Residuals", 
+           fill = "#F2E6E6", color = "white", family = "jetbrains") +
+  annotate(
+    'text',
+    x = 40.5,
+    y = 1.5, hjust = 0,
+    label = 'Observed = predicted\nNo residual', family = "jetbrains", color = "#CCCCCC") +
+  annotate(
+    'curve',
+    x = 40,
+    y = 1.5,  
+    xend = 35.25,
+    yend = 2.8,
+    curvature = -0.25,
+    color = "#CCCCCC",
+    arrow = arrow(length = unit(0.25, 'cm'))
+  )+
+  theme_custom()
+
+```
+
+## Predicted
+
+``` {r}
+ggplot(dat, aes(x = exp, y = lapr)) +
+  geom_line(aes(y = pred), color = "#CCCCCC", linewidth = 1.5) +
+  geom_segment(aes(xend = exp, yend = pred), color = "#F2E6E6", linewidth = 1.5) +
+    geom_point(size = 3, color = "#E0E5E5") +
+  geom_point(aes(y = pred), shape = 21, fill = "#87CEEB", color = "#000000", size = 4) +
+  labs(x = "Experience", y = "Performance") +
+  annotate("label", x = 29.5, y = 3.5, hjust = 0, 
+           label = "Observed\nValues",  
+           fill = "#E0E5E5", color = "white", family = "jetbrains") +
+  annotate("label", x = 52, y = 4.25, 
+           label = "Line of\nBest Fit",
+           fill = "#CCCCCC", color = "white", family = "jetbrains") +
+  annotate("label", x = 29.5, y = 1.9, hjust = 0,
+           label = "Predicted\nValues",
+           fill = "#87CEEB", color = "#000000", family = "jetbrains") +
+  annotate("label", x = 45, y = 3.5, hjust = 0,
+           label = "Residuals", 
+           fill = "#F2E6E6", color = "white", family = "jetbrains") +
+  annotate(
+    'text',
+    x = 40.5,
+    y = 1.5, hjust = 0,
+    label = 'Observed = predicted\nNo residual', family = "jetbrains", color = "#CCCCCC") +
+  annotate(
+    'curve',
+    x = 40,
+    y = 1.5,  
+    xend = 35.25,
+    yend = 2.8,
+    curvature = -0.25,
+    color = "#CCCCCC",
+    arrow = arrow(length = unit(0.25, 'cm'))
+  )+
+  theme_custom()
+```
+
+## Residuals
+
+``` {r}
+ggplot(dat, aes(x = exp, y = lapr)) +
+  geom_line(aes(y = pred), color = "#CCCCCC", linewidth = 1.5) +
+  geom_segment(aes(xend = exp, yend = pred), color = "#C26B6B", linewidth = 1.5) +
+  geom_point(aes(y = pred), shape = 21, fill = "#E7F7FC", color = "#CCCCCC", size = 4) + 
+    geom_point(size = 3, color = "#E0E5E5") + 
+  geom_point(data = dat |> filter(id == 84846), aes(x = exp, y = pred), shape = 21, fill = "#87CEEB", color = "#000000", size = 4) +
+  geom_point(data = dat |> filter(id == 84846), aes(x = exp, y = lapr), size = 3, color = "#336666") +
+  labs(x = "Experience", y = "Performance") +
+  annotate("label", x = 29.5, y = 3.5, hjust = 0,
+           label = "Observed\nValues", fill = "#E0E5E5", color = "white", family = "jetbrains") +
+  annotate("label", x = 52, y = 4.25,
+           label = "Line of\nBest Fit", fill = "#CCCCCC", color = "white", family = "jetbrains") +
+  annotate("label", x = 29.5, y = 1.9, hjust = 0,
+           label = "Predicted\nValues", fill = "#E7F7FC", color = "#CCCCCC", family = "jetbrains") +
+  annotate("label", x = 45, y = 3.5, hjust = 0,
+           label = "Residuals", fill = "#C26B6B", color = "white", family = "jetbrains") +
+  annotate("text", x = 40.5, y = 1.5, hjust = 0,
+           label = "Observed = predicted\nNo residual", family = "jetbrains") +
+  annotate("curve", x = 40, y = 1.5, xend = 35.25, yend = 2.8,
+           curvature = -0.25, color = "#000000",
+           arrow = arrow(length = unit(0.25, "cm"))) +
+  theme_custom()
+
+```
+:::
+
+
+## Multiple Linear Regression (MLR)
+
+Multiple linear regression is used when there are more than one predictor.
+
+## Regression diagnostics
+
+-   Variance Inflation Factor (VIF) and tolerance
+-   QQ (quantile quantile) plot
+-   Distance
+-   Fitted residuals
+-   Suppressor variables
+
+## Moderated Regression
+
+-   Need substantial power to detect moderator effects
+-   Often studies are underpowered to detect moderation (Aguinis et al., 2005)
+-   Should also be practically significant
+
+### Regions of Significance
+
+-   Pick a point analysis
+-   Johnson-Neyman technique (Johnson & Neyman, 1936; Bauer & Curran, 2005)
+    -   Detailed expositions of the Johnson--Neyman technique are provided by Aiken and West (1991), Kerlinger and Pedhazur (1973), and Pothoff (1983).
+
+Lin, H. (2020). Probing Two-way Moderation Effects: A Review of Software to Easily Plot Johnson-Neyman Figures. *Structural Equation Modeling: A Multidisciplinary Journal*, *27*(3), 494--502. <https://doi.org/10.1080/10705511.2020.1732826>
+
+Hayes, A. F., & Montoya, A. K. (2017). A Tutorial on Testing, Visualizing, and Probing an Interaction Involving a Multicategorical Variable in Linear Regression Analysis. *Communication Methods and Measures*, *11*(1), 1--30. <https://doi.org/10.1080/19312458.2016.1271116>
+
+Preacher, K. J., Curran, P. J., & Bauer, D. J. (2006). Computational Tools for Probing Interactions in Multiple Linear Regression, Multilevel Modeling, and Latent Curve Analysis. *Journal of Educational and Behavioral Statistics*, *31*(4), 437--448. <https://doi.org/10.3102/10769986031004437>
+
+https://www.ioatwork.com/test-bias-analysis-new-thoughts-on-an-old-method/
+
+### Simpsons Paradox
+
+## Generalized Linear Modeling (GLM)
+
+Generalized linear regression attempts to describe relationships between variables when the relationship may or may not be linear. The GLM uses a more general form of the equation earlier, g(Y) = XB + e, where g() is the link function. The link function refers to the expected distribution of Y and maps a non-linear relationship to a linear one. By default the expected value of Y is the normal distribution as in simple linear regression, which is just a special case of the GLM.
+
+There are many different linking functions:
+
+-   **Identity:** This is the normal distribution used when the criterion is normally distributed.
+
+-   **Logit:** This is used for binomial regression models, such as logistic regression. For instance, it could be used to predict whether an employee will leave or stay in the company (a binary criterion) based on their job satisfaction.
+
+-   **Log:** This is used when modeling count data or rate data, often with a Poisson or negative binomial distribution. For example, it could be used to model the number of sales calls made by an employee in a day. There are other link functions within the GLM like the negative inverse for exponential distributions, the reciprocal, and the probit as the alternative to the logit which are not commonly used in I-O.
+
+-   Logistic Regression
+
+-   Polynomial Regression
+
+-   Poisson Regression
+
+On the other hand, the `glm` function fits models of a more general form, g(Y) = XB + e, where you need to specify both the function g() (known as the "link function") and the distribution of the error term e. By default, `glm` uses the "identity function" for g(Y), which means g(Y) = Y, and it assumes a Normal distribution for the error term. In this default setting, `glm` essentially fits the same type of model as `lm`.
+
+However, what makes `glm` "generalized" is its flexibility to handle models where the relationship between the predictors and the response is not strictly linear. This non-linearity is introduced through the chosen link function. Common examples of generalized linear models include Poisson regression and logistic regression. It's worth noting that while "normal" regression is technically a type of generalized linear model, it's often not referred to as such because it represents the primary and most common case upon which the general model framework is built.
+
+## Types of Regression
+
+### Simple Linear Regression
+
+A simple linear #regression is the
+
+### Logistic Regression
+
+-   Predicted probabilites
+
+### Polynomial Regression
+
+### Ridge Regression
+
+### LASSO Regression
