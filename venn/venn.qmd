@@ -53,7 +53,7 @@ y_x1_x2_x3 <- st_intersection(st_intersection(st_intersection(y_sf, x1_sf), x2_s
 
 ```{r}
 ggplot() +
-  geom_sf(data = y_only,         fill = "#CCCCCC", alpha = .5, color = NA) +
+  geom_sf(data = y_only,         fill = "#CCCCCC", alpha = 1, color = NA) +
   geom_sf(data = x1_only,        fill = "#00FFFF", alpha = .5, color = NA) + # cyan
   geom_sf(data = x2_only,        fill = "#FF00FF", alpha = .5, color = NA) + # magenta
   geom_sf(data = x3_only,        fill = "#FFFF00", alpha = .5, color = NA) + # yellow
@@ -64,6 +64,7 @@ ggplot() +
   
   geom_sf(data = x1_x2_only,     fill = "#0000FF", alpha = .5, color = NA) + # C+M = blue
   geom_sf(data = x1_x3_only,     fill = "#00FF00", alpha = .5, color = NA) + # C+Y = green
+  geom_sf(data = x2_x3_only,     fill = "#FFFFFF", alpha = 1, color = NA) + # M+Y = red
   geom_sf(data = x2_x3_only,     fill = "#FF0000", alpha = .5, color = NA) + # M+Y = red
   
   geom_sf(data = y_x1_x2_only,   fill = "#0000FF", alpha = 1, color = NA) +
@@ -85,17 +86,17 @@ ggplot() +
 
 ```{r}
 ggplot() +
-  geom_sf(data = y_only,         fill = "#CCCCCC", alpha = .5, color = NA) +
+  geom_sf(data = y_only,         fill = "#CCCCCC", alpha = 1, color = NA) +
   geom_sf(data = x1_only,        fill = "#00FFFF", alpha = .5, color = NA) + # cyan
 
   geom_sf(data = y_x1_only,      fill = "#00FFFF", alpha = 1, color = NA) +
-    geom_sf(data = y_x2_only,      fill = "#CCCCCC", alpha = .5, color = NA) +
+    geom_sf(data = y_x2_only,      fill = "#CCCCCC", alpha = 1, color = NA) +
 
     geom_sf(data = x1_x2_only,     fill = "#00FFFF", alpha = .5, color = NA) + 
 
   geom_sf(data = y_x1_x2_only,   fill = "#00FFFF", alpha = 1, color = NA) +
   geom_sf(data = y_x1_x3_only,   fill = "#00FFFF", alpha = 1, color = NA) +
-    geom_sf(data = y_x2_x3_only,   fill = "#CCCCCC", alpha = .5, color = NA) +
+    geom_sf(data = y_x2_x3_only,   fill = "#CCCCCC", alpha = 1, color = NA) +
 
 
   geom_sf(data = x1_x2_x3_only,  fill = "#00FFFF", alpha = .5, color = NA) +
@@ -103,6 +104,136 @@ ggplot() +
   
   geom_sf(data = y_sf,  fill = NA, color = "#000000", linewidth = 0.8) +
   geom_sf(data = x1_sf, fill = NA, color = "#000000", linewidth = 0.8) +
+  coord_sf(expand = FALSE) +
+  theme_void()
+```
+
+## Plot x2 only
+
+```{r}
+ggplot() +
+  geom_sf(data = y_only,         fill = "#CCCCCC", alpha = 1, color = NA) +
+  geom_sf(data = x2_only,        fill = "#FF00FF", alpha = .5, color = NA) + # magenta
+
+  geom_sf(data = y_x1_only,      fill = "#CCCCCC", alpha = 1, color = NA) +
+  geom_sf(data = y_x2_only,      fill = "#FF00FF", alpha = 1, color = NA) +
+
+  geom_sf(data = x1_x2_only,     fill = "#FF00FF", alpha = .5, color = NA) + # C+M = blue
+
+  geom_sf(data = y_x1_x2_only,   fill = "#FF00FF", alpha = 1, color = NA) +
+  geom_sf(data = y_x2_x3_only,   fill = "#FF00FF", alpha = 1, color = NA) +
+  
+  geom_sf(data = x1_x2_x3_only,  fill = "#FF00FF", alpha = .5, color = NA) +
+  geom_sf(data = y_x1_x2_x3,     fill = "#FF00FF", alpha = 1, color = NA) +
+  
+  geom_sf(data = y_sf,  fill = NA, color = "#000000", linewidth = 0.8) +
+  geom_sf(data = x2_sf, fill = NA, color = "#000000", linewidth = 0.8) +
+  coord_sf(expand = FALSE) +
+  theme_void()
+```
+
+## Plot x3 only
+
+```{r}
+ggplot() +
+  geom_sf(data = y_only,         fill = "#CCCCCC", alpha = 1, color = NA) +
+  geom_sf(data = x3_only,        fill = "#FFFF00", alpha = .5, color = NA) + # yellow
+  
+  geom_sf(data = y_x1_only,      fill = "#CCCCCC", alpha = 1, color = NA) +
+  geom_sf(data = y_x2_only,      fill = "#CCCCCC", alpha = 1, color = NA) +
+  geom_sf(data = y_x3_only,      fill = "#FFFF00", alpha = 1, color = NA) +
+  
+  geom_sf(data = y_x1_x2_only,   fill = "#CCCCCC", alpha = 1, color = NA) +
+  geom_sf(data = y_x2_x3_only,   fill = "#FFFF00", alpha = 1, color = NA) +
+  
+  geom_sf(data = x1_x2_x3_only,  fill = "#FFFF00", alpha = .5, color = NA) +
+  geom_sf(data = y_x1_x2_x3,     fill = "#FFFF00", alpha = 1, color = NA) +
+  
+  geom_sf(data = y_sf,  fill = NA, color = "#000000", linewidth = 0.8) +
+  geom_sf(data = x3_sf, fill = NA, color = "#000000", linewidth = 0.8) +
+  coord_sf(expand = FALSE) +
+  theme_void()
+```
+
+## Plot x1 and x2 only
+
+```{r}
+ggplot() +
+  geom_sf(data = y_only,         fill = "#CCCCCC", alpha = 1, color = NA) +
+  geom_sf(data = x1_only,        fill = "#00FFFF", alpha = .5, color = NA) + # cyan
+  geom_sf(data = x2_only,        fill = "#FF00FF", alpha = .5, color = NA) + # magenta
+
+  geom_sf(data = y_x1_only,      fill = "#00FFFF", alpha = 1, color = NA) +
+  geom_sf(data = y_x2_only,      fill = "#FF00FF", alpha = 1, color = NA) +
+  geom_sf(data = y_x3_only,      fill = "#CCCCCC", alpha = 1, color = NA) +
+  
+  geom_sf(data = x1_x2_only,     fill = "#0000FF", alpha = .5, color = NA) + # C+M = blue
+
+  geom_sf(data = y_x1_x2_only,   fill = "#0000FF", alpha = 1, color = NA) +
+  geom_sf(data = y_x2_x3_only,   fill = "#FF00FF", alpha = 1, color = NA) +
+  
+  geom_sf(data = x1_x2_x3_only,  fill = "#0000FF", alpha = .5, color = NA) +
+  geom_sf(data = y_x1_x2_x3,     fill = "#0000FF", alpha = 1, color = NA) +
+  
+  geom_sf(data = y_sf,  fill = NA, color = "#000000", linewidth = 0.8) +
+  geom_sf(data = x1_sf, fill = NA, color = "#000000", linewidth = 0.8) +
+  geom_sf(data = x2_sf, fill = NA, color = "#000000", linewidth = 0.8) +
+  coord_sf(expand = FALSE) +
+  theme_void()
+```
+
+## Plot x1 and x3 only
+
+```{r}
+ggplot() +
+  geom_sf(data = y_only,         fill = "#CCCCCC", alpha = 1, color = NA) +
+  geom_sf(data = x1_only,        fill = "#00FFFF", alpha = .5, color = NA) + # cyan
+  geom_sf(data = x3_only,        fill = "#FFFF00", alpha = .5, color = NA) + # yellow
+  
+  geom_sf(data = y_x1_only,      fill = "#00FFFF", alpha = 1, color = NA) +
+  geom_sf(data = y_x2_only,      fill = "#CCCCCC", alpha = 1, color = NA) +
+  geom_sf(data = y_x3_only,      fill = "#FFFF00", alpha = 1, color = NA) +
+  
+  geom_sf(data = x1_x2_only,     fill = "#00FFFF", alpha = .5, color = NA) + # C+M = blue
+
+  geom_sf(data = y_x1_x2_only,   fill = "#00FFFF", alpha = 1, color = NA) +
+  geom_sf(data = y_x2_x3_only,   fill = "#FFFF00", alpha = 1, color = NA) +
+  
+  geom_sf(data = x1_x2_x3_only,  fill = "#00FF00", alpha = .5, color = NA) +
+  geom_sf(data = y_x1_x2_x3,     fill = "#00FF00", alpha = 1, color = NA) +
+  
+  geom_sf(data = y_sf,  fill = NA, color = "#000000", linewidth = 0.8) +
+  geom_sf(data = x1_sf, fill = NA, color = "#000000", linewidth = 0.8) +
+  geom_sf(data = x3_sf, fill = NA, color = "#000000", linewidth = 0.8) +
+  coord_sf(expand = FALSE) +
+  theme_void()
+```
+
+## Plot x2 and x3 only
+
+```{r}
+ggplot() +
+  geom_sf(data = y_only,         fill = "#CCCCCC", alpha = 1, color = NA) +
+  geom_sf(data = x2_only,        fill = "#FF00FF", alpha = .5, color = NA) + # magenta
+  geom_sf(data = x3_only,        fill = "#FFFF00", alpha = .5, color = NA) + # yellow
+  
+  geom_sf(data = y_x1_only,      fill = "#CCCCCC", alpha = 1, color = NA) +
+  geom_sf(data = y_x2_only,      fill = "#FF00FF", alpha = 1, color = NA) +
+  geom_sf(data = y_x3_only,      fill = "#FFFF00", alpha = 1, color = NA) +
+  
+  geom_sf(data = x1_x2_only,     fill = "#FF00FF", alpha = .5, color = NA) + # C+M = blue
+    geom_sf(data = x2_x3_only,     fill = "#FFFFFF", alpha = 1, color = NA) + # M+Y = red
+  geom_sf(data = x2_x3_only,     fill = "#FF0000", alpha = .5, color = NA) + # M+Y = red
+  
+  geom_sf(data = y_x1_x2_only,   fill = "#FF00FF", alpha = 1, color = NA) +
+  geom_sf(data = y_x2_x3_only,   fill = "#FF0000", alpha = 1, color = NA) +
+  
+  geom_sf(data = x1_x2_x3_only,  fill = "#FF0000", alpha = .5, color = NA) +
+  geom_sf(data = y_x1_x2_x3,     fill = "#FF0000", alpha = 1, color = NA) +
+
+  geom_sf(data = y_sf,  fill = NA, color = "#000000", linewidth = 0.8) +
+  geom_sf(data = x2_sf, fill = NA, color = "#000000", linewidth = 0.8) +
+  geom_sf(data = x3_sf, fill = NA, color = "#000000", linewidth = 0.8) +
   coord_sf(expand = FALSE) +
   theme_void()
 ```
