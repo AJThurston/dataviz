@@ -8,12 +8,12 @@ suppressMessages({
 
 theme_custom <- function(base_size = 16, base_family = "jetbrains") {
   list(  
-    labs(caption = "@AJThurston"),
+    labs(caption = "Andrew J. Thurston © 2026 | ajthurston.com"),
     theme(
       text = element_text(size = base_size, family = base_family),
       plot.background = element_rect(fill = "#FFFFFC", color = NA),
       plot.margin = unit(c(1,1,.5,.5), "cm"),
-      plot.caption = element_text(color = "#CCCCCF"),
+      plot.caption = element_text(color = "#CCCCCF", size = 12),
       panel.grid = element_blank(),
       panel.background = element_blank(),
       axis.line = element_line(color = "black"),
